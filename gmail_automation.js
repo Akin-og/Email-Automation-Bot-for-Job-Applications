@@ -2,7 +2,7 @@
 var RESUME_ID = 'YOUR_RESUME_FILE_ID'; // Replace with your resume's file ID
 var TARGET_LABEL = 'Jobs';  // Label under which you want to reply
 var MESSAGE_BODY = 'Hi, \n\nPlease find my resume attached for your consideration.\n\nBest regards,\n[Your Name]';
-var SCRIPT_PROPERTIES = PropertiesService.getScriptProperties();  // To store the last message ID
+var SCRIPT_PROPERTIES = PropertiesService.getScriptProperties();
 
 function replyWithResume() {
   var label = GmailApp.getUserLabelByName(TARGET_LABEL);
@@ -13,21 +13,20 @@ function replyWithResume() {
   }
 
   var threads = label.getThreads(0, 10);  // Get latest 10 threads under the "Jobs" label
-  var resumeFile = DriveApp.getFileById(RESUME_ID);  // Get the resume file from Google Drive
+  var resumeFile = DriveApp.getFileById(RESUME_ID);
   
-  // Loop through each thread in the label
+  
   threads.forEach(function (thread) {
     var messages = thread.getMessages();
-    var lastMessage = messages[messages.length - 1];  // Get the most recent message
+    var lastMessage = messages[messages.length - 1];
 
-    // Get the last replied message ID from script properties
+  
     var lastRepliedMessageId = SCRIPT_PROPERTIES.getProperty('lastRepliedMessageId_' + thread.getId());
     
-    // Check if the message is newer than the last replied one
     if (!lastMessage.isInChats() && !lastMessage.isDraft() && lastMessage.getId() !== lastRepliedMessageId) {
       // Reply to the email with the resume attached
       lastMessage.reply(MESSAGE_BODY, {
-        attachments: [resumeFile.getAs(MimeType.PDF)]  // Attach the resume as a PDF
+        attachments: [resumeFile.getAs(MimeType.PDF)]
       });
 
       // Store the ID of the replied message to avoid replying again
